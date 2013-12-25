@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="editor.css" type="text/css"?>
+
+<window
+       id="editor-window"
+       title="Création d'une instance XIMFMail"
+       orient="vertical"
+	   xmlns:html="http://www.w3.org/1999/xhtml"
+       xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	   
+	<script type="application/javascript" src="chrome://editorInst/content/instance_editor_windows.js"/>
+	
+	<header>
+		<html:h1>Création d'une instance XIMFMail</html:h1>
+	</header>
+	
+	<html:body onload="ready()">
+				<html:table id="contenu">
+				</html:table>
+	</html:body>
+	
+	<footer>
+		<html:input type="button" name="Clear" value="Clear" onclick="clear()"/>
+		<html:input type="button" name="premiere Page" value="premiere Page" onclick="premierePage()"/>
+		<html:input type="button" name="deuxieme Page" value="deuxieme Page" onclick="finPremierePage()"/>
+		<html:input type="button" name="troisième Page" value="troisième Page" onclick="finDeuxiemePage()"/>
+		<html:input type="button" name="Test" value="Test" onclick="test()"/>
+	</footer>
+	
+</window>

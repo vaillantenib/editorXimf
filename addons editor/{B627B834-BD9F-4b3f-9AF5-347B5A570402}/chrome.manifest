@@ -1,0 +1,3 @@
+content editorInst chrome/content/kernel/
+overlay chrome://messenger/content/mailWindowOverlay.xul chrome://editorInst/content/instance_editor.xul
+

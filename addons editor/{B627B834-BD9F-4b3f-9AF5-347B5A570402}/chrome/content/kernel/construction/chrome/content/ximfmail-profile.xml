@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<profile>
+	<theme name=" 1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\DOC\DOC_THUN_INTRACED\ximf_profile.xsd">
+		<instance id="smtp" ximfVersion="2.0" version="1.0" label="Message standard" name="smtp" directory="" author="string"/>
+		<instance id="idmaximeDefinition" ximfVersion="2.0" version="1.0"
+			name="maxime"
+			directory="3/chrome/content/Instance/"
+			author="Ximfmail">
+			<schema id="AAAAB" name="maxime">headers-maxime.xml</schema>
+			<dictionary author="EADS DS">dictionary-maxime.xml</dictionary>
+			<ihm id="AAAAC" name="string">ihm-maxime.xml</ihm>			<rule id="AAAAD" author="string">rules-maxime.xml</rule>
+		</instance>
+	</theme>
+</profile>

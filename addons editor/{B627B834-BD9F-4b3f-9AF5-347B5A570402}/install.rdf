@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+  <Description about="urn:mozilla:install-manifest">
+    <em:name>Instance_Editor</em:name>
+    <em:unpack>true</em:unpack>
+    <em:version>0.6.4</em:version>
+    <em:id>{B627B834-BD9F-4b3f-9AF5-347B5A570402}</em:id>
+    <em:description>Instance Editor for XIMFMail</em:description>
+
+    <em:targetApplication>
+      <!-- Thunderbird -->
+      <Description>
+       <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
+       <em:minVersion>17.0</em:minVersion>
+       <!--<em:maxVersion>3.1.*</em:maxVersion>-->
+       <em:maxVersion>17.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+
+    <!-- Informations -->
+    <em:homepageURL></em:homepageURL>
+  <em:optionsURL/><em:aboutURL/></Description>
+</RDF>
