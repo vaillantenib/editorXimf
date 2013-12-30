@@ -3,7 +3,9 @@
 var gConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 var contenu;
 var arrayElement = [];
+var arrayOnglet = [];
 var dict = new Object();
+var onglets = new Object();
 
 function ready(){
 	contenu = document.getElementById("contenu");
@@ -93,7 +95,6 @@ function troisiemePage(){
 	for (var k in listFr) {
 		if (listFr.hasOwnProperty(k)) {
 			if(listFr[k]!="") addWorldDict(0);
-			gConsole.logStringMessage("--"+listFr[k]+"--");
 		}
 	}
 	
@@ -116,6 +117,7 @@ function finTroisiemePage(){
 	quatriemePage();
 }
 
+/*
 function quatriemePage(){
 	clear();
 	var h2=createElement("h2","name_page","Onglets de l'instance");
@@ -149,6 +151,55 @@ function addOnglet(change){
 	arrayElement.push(label1);
 	afficheElement(arrayElement);
 }
+*/
+
+function quatriemePage(){
+	clear();
+	var h2=createElement("h2","name_page","Onglets de l'instance");
+	contenu.appendChild(h2);
+	
+	addOnglet(1);
+}
+
+function addOnglet(change){
+	if(arrayOnglet.length<5){
+		var button1=createElement("input","onglet"+arrayOnglet.length,"","text");
+		if(change==1) button1.setAttribute("onchange","addOnglet();this.removeAttribute(\"onchange\");");
+		button1.setAttribute("onclick","onglet"+arrayOnglet.length+"();");
+		var button2=createElement("input","onglet"+(arrayOnglet.length+1),"","text");
+		if(change==1) button2.setAttribute("onchange","addOnglet();this.removeAttribute(\"onchange\");");
+		button2.setAttribute("onclick","onglet"+(arrayOnglet.length+1)+"();");
+		
+		arrayOnglet.push(button1);
+		arrayOnglet.push(button2);
+	}
+	clear();
+	addLigne(arrayOnglet);
+}
+
+function onglet0(){
+	var table=createElement("table","table"+arrayOnglet.length,"","");
+}
+
+function onglet1(){
+	var table=createElement("table","table"+arrayOnglet.length,"","");
+}
+
+function onglet2(){
+	var table=createElement("table","table"+arrayOnglet.length,"","");
+}
+
+function onglet3(){
+	var table=createElement("table","table"+arrayOnglet.length,"","");
+}
+
+function onglet4(){
+	var table=createElement("table","table"+arrayOnglet.length,"","");
+}
+
+function onglet5(){
+	var table=createElement("table","table"+arrayOnglet.length,"","");
+}
 
 function afficheElement(array){
 	var tr;
@@ -164,6 +215,18 @@ function afficheElement(array){
 		tr.appendChild(td);
 		td.appendChild(array[i+1]);
 		contenu.appendChild(br);
+	}
+}
+
+function addLigne(array){
+	var tr;
+	tr=createElement("tr");
+	var td;
+	contenu.appendChild(tr);
+	for(var i=0 ; array.length>i ; i++){
+		td=createElement("td");
+		td.appendChild(array[i]);
+		tr.appendChild(td);
 	}
 }
 
@@ -273,7 +336,7 @@ function createFile(sPath,data){
 
 
 function createElement(tag,id="",value="",type=""){
-	if(tag=="label"){ var ele = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "html:"+tag);}
+	if(tag=="label" || tag=="table"){ var ele = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "html:"+tag);}
 	else{ var ele = document.createElementNS("http://www.w3.org/1999/xhtml", tag);}
 	//if(tag=="input"){dict[id]="";}
 	if(id!="")ele.setAttribute("id", id);
