@@ -22,10 +22,13 @@
 	
 	<footer>
 		<html:input type="button" name="Clear" value="Clear" onclick="clear()"/>
-		<html:input type="button" name="premiere Page" value="premiere Page" onclick="premierePage()"/>
-		<html:input type="button" name="deuxieme Page" value="deuxieme Page" onclick="finPremierePage()"/>
-		<html:input type="button" name="troisième Page" value="troisième Page" onclick="finDeuxiemePage()"/>
-		<html:input type="button" name="Test" value="Test" onclick="test()"/>
+		<html:input type="button" name="premiere Page" value="extension" onclick="premierePage()"/>
+		<html:input type="button" name="deuxieme Page" value="instance" onclick="finPremierePage()"/>
+		<html:input type="button" name="troisième Page" value="dictionnaire" onclick="finDeuxiemePage()"/>
+		<html:input type="button" name="quatrième Page" value="onglets" onclick="finTroisiemePage()"/>
+		<html:input type="button" name="create" value="Create" onclick="create()"/>
+		<html:input type="button" name="save" value="Save" onclick="save()"/>
+		<html:input type="button" name="afficher" value="Afficher" onclick="afficher()"/>
 	</footer>
 	
 </window>
