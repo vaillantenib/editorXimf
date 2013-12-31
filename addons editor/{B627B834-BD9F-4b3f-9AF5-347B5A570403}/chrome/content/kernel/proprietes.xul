@@ -1,0 +1,50 @@
+<window
+       id="editor-window"
+       title="Création d'une instance XIMFMail"
+       orient="vertical"
+	   xmlns:html="http://www.w3.org/1999/xhtml"
+       xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<html:table>
+		<html:tr>
+			<html:td>Nom du thème : </html:td>
+			<html:td><textbox id="theme-name"/></html:td>
+		</html:tr>
+		<html:br/>
+		<html:tr>
+			<html:td><label value="ID de l'instance : "/></html:td>
+			<html:td><textbox id="some-text"/></html:td>
+		</html:tr>
+		<html:br/>
+		<html:tr>
+			<html:td><label value="XIMF Version : "/></html:td>
+			<html:td><textbox id="some-text"/></html:td>
+		</html:tr>
+		<html:br/>
+		<html:tr>
+			<html:td><label value="Version de l'instance : "/></html:td>
+			<html:td><textbox id="some-text"/></html:td>
+		</html:tr>
+		<html:br/>
+		<html:tr>
+			<html:td><label value="Nom de l'instance : "/></html:td>
+			<html:td><textbox id="some-text"/></html:td>
+		</html:tr>
+		<html:br/>
+		<html:tr>
+			<html:td><label value="Répertoire de l'instance : "/></html:td>
+			<html:td><textbox id="some-text"/></html:td>
+		</html:tr>
+		<html:br/>
+		<html:tr>
+			<html:td><label value="Auteur de l'instance : "/></html:td>
+			<html:td><textbox id="some-text"/></html:td>
+		</html:tr>
+		<html:br/>
+		<html:tr>
+			<html:td><label value="Nom du schema : "/></html:td>
+			<html:td><textbox id="some-text"/></html:td>
+		</html:tr>
+	</html:table>
+
+</window>

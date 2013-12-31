@@ -6,65 +6,26 @@ var arrayElement = [];
 var arrayOnglet = [];
 var dict = new Object();
 var onglets = new Object();
-var listOnglets = [];
-var page = "";
 
 function ready(){
 	contenu = document.getElementById("contenu");
-	premierePage();
-
+	//premierePage();
+	document.getElementById("iframe").setAttribute("src","proprietes.xul");
+	document.getElementById("iframe").setAttribute("width","400px");
+	document.getElementById("iframe").setAttribute("height","400px");
 }
 
 
-function premierePage(){
-	clear();
-	page="premierePage";
-	var h2=createElement("h2","name_page","Propriétés de l'extension");
-	contenu.appendChild(h2);
-	var label1=createElement("label","name_theme","Nom du thème : ");
-	var input1=createElement("input","inp_name_theme","","text");
-	var label2=createElement("label","vers_theme","Version du thème : ");
-	var input2=createElement("input","inp_vers_theme","","text");
-	var label3=createElement("label","id_inst","ID de l'instance : ");
-	var input3=createElement("input","inp_id_inst","","text");
-	var label4=createElement("label","desc_inst","Description de l'instance : ");
-	var input4=createElement("input","inp_desc_inst","","text");
-	var label5=createElement("label","min_vers","Version minimum de Thunderbird : ");
-	var input5=createElement("input","inp_min_vers","","text");
-	var label6=createElement("label","max_vers","Version maximum de Thunderbird : ");
-	var input6=createElement("input","inp_max_vers","","text");
-	var label7=createElement("label","creator","Créateur de l'instance : ");
-	var input7=createElement("input","inp_creator","","text");
-	
-	
-	arrayElement.push(label1);
-	arrayElement.push(input1);
-	arrayElement.push(label2);
-	arrayElement.push(input2);
-	arrayElement.push(label3);
-	arrayElement.push(input3);
-	arrayElement.push(label4);
-	arrayElement.push(input4);
-	arrayElement.push(label5);
-	arrayElement.push(input5);
-	arrayElement.push(label6);
-	arrayElement.push(input6);
-	arrayElement.push(label7);
-	arrayElement.push(input7);
-	
-	afficheElement(arrayElement);
-	
+function proprietes(){
+	document.getElementById("iframe").setAttribute("src","proprietes.xul");
 }
 
 function finPremierePage(){
-	//create("install.rdf");
-	//clear();
 	deuxiemePage();
 }
 
 function deuxiemePage(){
 	clear();
-	page="deuxiemePage";
 	var h2=createElement("h2","name_page","Propriétés de l'instance");
 	contenu.appendChild(h2);
 	var label1=createElement("label","name_inst","Nom de l'instance : ");
@@ -84,27 +45,8 @@ function finDeuxiemePage(){
 	troisiemePage();
 }
 
-function troisiemePage(){
-	clear();
-	page="troisiemePage";
-	var h2=createElement("h2","name_page","Dictionnaire de l'instance");
-	contenu.appendChild(h2);
-	var label1=createElement("label","fr","Français");
-	var label2=createElement("label","us","Anglais");
-	
-	arrayElement.push(label1);
-	arrayElement.push(label2);
-	afficheElement(arrayElement);
-	
-	var listFr = hashWithId(dict,"listFr");
-	for (var k in listFr) {
-		if (listFr.hasOwnProperty(k)) {
-			if(listFr[k]!="") addWorldDict(0);
-		}
-	}
-	
-	addWorldDict(1);
-	
+function dictionnaire(){
+	document.getElementById("iframe").setAttribute("src","dictionnaire.xul");
 }
 
 function addWorldDict(change){
@@ -160,7 +102,6 @@ function addOnglet(change){
 
 function quatriemePage(){
 	clear();
-	page="quatriemePage";
 	var h2=createElement("h2","name_page","Onglets de l'instance");
 	contenu.appendChild(h2);
 	
@@ -171,10 +112,10 @@ function addOnglet(change){
 	if(arrayOnglet.length<5){
 		var button1=createElement("input","onglet"+arrayOnglet.length,"","text");
 		if(change==1) button1.setAttribute("onchange","addOnglet();this.removeAttribute(\"onchange\");");
-		//button1.setAttribute("onclick","onglet"+arrayOnglet.length+"();");
+		button1.setAttribute("onclick","onglet"+arrayOnglet.length+"();");
 		var button2=createElement("input","onglet"+(arrayOnglet.length+1),"","text");
 		if(change==1) button2.setAttribute("onchange","addOnglet();this.removeAttribute(\"onchange\");");
-		//button2.setAttribute("onclick","onglet"+(arrayOnglet.length+1)+"();");
+		button2.setAttribute("onclick","onglet"+(arrayOnglet.length+1)+"();");
 		
 		arrayOnglet.push(button1);
 		arrayOnglet.push(button2);
@@ -282,7 +223,7 @@ function create(){
 	
 	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+"ximfmail-profile.xml");
 	var name_inst=dict["inp_name_inst"];
-	data = createXimfProfile(name_theme,name_inst,id_inst);
+	var data = createXimfProfile(name_theme,name_inst,id_inst);
 	createFile(sPath,data);
 	
 	file.append(name_theme);
@@ -293,23 +234,23 @@ function create(){
 	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+name_theme+"/dictionary-"+name_theme+".xml");
 	var listFr = hashWithId(dict,"listFr");
 	var listUs = hashWithId(dict,"listUs");
-	data = createDictionnary(name_inst,listFr,listUs);
+	var data = createDictionnary(name_inst,listFr,listUs);
 	createFile(sPath,data);
 	
-	listOnglets.push(new onglet("name")); 
-	new group("name");
-	
-	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+name_theme+"/headers-"+name_theme+".xml");
-	data = createHeaders(name_inst,listObjectStatic,listObjectDyn);
+	/*sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+name_theme+"/headers-"+name_theme+".xml");
+	var name_inst=dict("inp_name_inst");
+	var data = createHeaders();
 	createFile(sPath,data);
 	
 	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+name_theme+"/ihm-"+name_theme+".xml");
-	data = createIhm(name_inst,listOnglets);
+	var name_inst=dict("inp_name_inst");
+	var data = createIhm();
 	createFile(sPath,data);
 	
 	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+name_theme+"/rules-"+name_theme+".xml");
-	data = createRules(name_inst,listAssociations);
-	createFile(sPath,data);
+	var name_inst=dict("inp_name_inst");
+	var data = createRules();
+	createFile(sPath,data);*/
 	
 	
 }
@@ -339,6 +280,7 @@ function createFile(sPath,data){
 	converter.writeString(data);
 	converter.close();
 }
+
 
 function createElement(tag,id="",value="",type=""){
 	if(tag=="label" || tag=="table"){ var ele = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "html:"+tag);}
@@ -370,6 +312,8 @@ function test(){
 
 }
 
+
+
 function createRdf(name_theme,vers_theme,id_inst,desc_inst,min_vers,max_vers,creator){
 	var data = 
 	"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<RDF xmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:em=\"http://www.mozilla.org/2004/em-rdf#\">\n  <Description about=\"urn:mozilla:install-manifest\">\n    <em:name>"+name_theme+"</em:name>\n    <em:version>"+vers_theme+"</em:version>\n    <em:unpack>true</em:unpack>\n    <em:id>"+id_inst+"</em:id>\n    <em:description>"+desc_inst+"</em:description>\n    <em:targetApplication>\n      <!-- Thunderbird -->\n      <Description>\n       <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>\n       <em:minVersion>"+min_vers+"</em:minVersion>\n       <em:maxVersion>"+max_vers+"</em:maxVersion>\n      </Description>\n    </em:targetApplication>\n <em:creator>"+creator+"</em:creator>\n </Description>\n</RDF>";
@@ -387,9 +331,8 @@ function createXimfProfile(name_theme,name_inst,id_inst){
 }
 
 function clear(){
-	save();
-	page ="";
 	arrayElement.length=0;
+	save();
 	while(contenu.firstChild) contenu.removeChild(contenu.firstChild);
 }
 
@@ -426,154 +369,25 @@ function stringToIlk(data){
 	return dataIlk;
 }
 
-function createHeaders(name_inst,listObjectStatic,listObjectDyn){
-	var data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet type=\"text/xsl\" href=\"ximftoxul.xsl\"?>\r\n<ximf:instance name=\""+name_inst+"\" version=\"1.0\" ximfVersion=\"2.0\" xmlns:ximf=\"http://eads.org/ximf/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://eads.org/ximf/ ximf.xsd\">\r";
+function createHeaders(){
 	
-	var espace = "\r\n\t";
-	
-	for (var k in listObjectStatic) {
-			data += espace;
-			data += "<ximf:header id=\"header-"+k.name+"\" headerName=\"X-XIMF-"+k.name+"\" >\t\t\r\n\t\t<ximf:string content=\""+k.value+"\"/>\r\n\t</ximf:header>\r";
-	}
-	
-	for (var k in listObjectDyn) {
-			data += espace;
-			data += "<ximf:header id=\"header-"+k.name+"\" \r\n\t\t\t\t headerName=\"X-XIMF-"+k.name+"\"\r\n\t\t\t\t type=\""+k.type+"\"\r\n\t\t\t\t ilk=\"ilk-"+k.name+"\"\r\n\t\t\t\t isMandatory=\""+k.mandatory+"\">\r";
-			data += "\n\t\t<ximf:set id=\"value-"+k.name+"\">\r";
-			if(k.type == "date"){
-				data += "\n\t\t\t<ximf:string id=\"value-"+k.name+"\" editable=\"true\" />\r";
-			}else{
-				for( var i in k.options){
-					data += "\n\t\t\t<ximf:string ilk=\"ilk-"+i+"\" content=\""+i+"\"/>\r";
-				}			
-			}
-			data += "\n\t\t</ximf:set>\r";
-			data += "\n\t</ximf:header>\r";
-	}
-	
-	data += "\n\t\r\n</ximf:instance>\r\n";
 	return data;
 }
 
-function objectStatic(name,value){
-	this.name = name;
-	this.value = value;
+function createIhm(){
 	
-	return this.name;
-}
-
-function objectDyn(name,type,mandatory){
-	this.name = name;
-	this.type = type;
-	this.mandatory = mandatory;
-	this.options = [];
-	
-	this.addOptions = function(value){
-		this.options.push(value);
-	};
-	
-	return this.name;
-}
-
-function onglet(name){
-	this.name = name;
-	this.groups = [];
-	
-	this.addGroup = function(value){
-		this.groups.push(value);
-	};
-	
-	return this.name;
-}
-
-function group(name){
-	this.name = name;
-	this.elements = [];
-	
-	this.addElement = function(value){
-		this.elements.push(value);
-	};
-	
-	return this.name;
-}
-
-function association(contraint,condition){
-	this.contraint = contraint;
-	this.condition = condition;
-	this.rules = [];
-	
-	this.addRule = function(listContraint,listCondition){
-		rules.push([listContraint,listCondition]);
-	}
-}
-
-function createIhm(name_inst,listOnglets){
-	var data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<ximf:instance name=\""+name_inst+"\" version=\"1.0\" ximfVersion=\"2.0\" xmlns:ximf=\"http://eads.org/ximf/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://eads.org/ximf/ ximf.xsd\">\r";
-	data += "\n<ximf:ihm xmlns:ximf=\"http://eads.org/ximf/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r";
-	
-	for (var k in listOnglets) {
-		data += "\n\t<ximf:panel id=\"pane_"+k.name+"\" ilk=\"ilk-"+k.name+"\">\r";
-		for (var j in k.groups) {
-			data += "\n\t\t<ximf:groupbox id=\"group-"+j.name+"\" ilk=\"ilk-"+j.name+"\">\r";
-			for (var i in j.elements) {
-				data += "\n\t\t\t<ximf:headerRef>header-"+i.name+"</ximf:headerRef>\r";
-			}
-			data += "\n\t\t</ximf:groupbox>\r";
-		}
-		data += "\n\t</ximf:panel>\r";
-	}
-	data += "\n</ximf:ihm>\r\n</ximf:instance>";
 	return data;
 }
 
-function createRules(name_inst,listAssociations){
-	var data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<ximf:instance name=\""+name_inst+"\" version=\"1.0\" ximfVersion=\"2.0\" xmlns:ximf=\"http://eads.org/ximf/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://eads.org/ximf/ ximf.xsd\">\r";
+function createRules(){
 	
-	for (var k in listAssociations) {
-		data += "\n\t<ximf:rule id=\"compatibility-rule\" description=\"Règle sur la compatibilités X-SMTP / XIMF\" >\r";
-		data += "\n\t\t<ximf:association>\r";
-		data += "\n\t\t\t\t<ximf:aliasHeader headerName=\"X-XIMF-"+k.contraint.name+"\" headerRef=\"X-XIMF-"+k.condition.name+"\">\r";
-		for (var j in k.rules) {
-			data += "\n\t\t\t\t<ximf:aliasValue valueName=\"";
-			var bool=1;
-			for (var i in j[0]) {
-				if(bool!=1){
-					data += ",";
-				}
-				data += i;
-				bool=0;
-			}
-			bool=1;
-			data += "\" valueRef=\"";
-			for (var i in j[1]) {
-				if(bool!=1){
-					data += ",";
-				}
-				data += i;
-				bool=0;
-			}
-			data += "\" />\r";
-		}
-		data += "\n\t\t\t\t</ximf:aliasHeader>\r";
-		data += "\n\t\t</ximf:association>\r";
-		data += "\n\t</ximf:rule>\r";
-	}
-	data += "\n</ximf:instance>";
 	return data;
 }
 
 function save(){
-	if(page == "premierePage" || page=="deuxiemePage" || page == "troisiemePage"){
-		var input = contenu.getElementsByTagName("input");
-		for(var i = 0;i<input.length;i++){
-			dict[input[i].id]=input[i].value;
-		}
-	}
-	else if(page == "quatriemePage"){
-		var input = contenu.getElementsByTagName("input");
-		for(var i = 0;i<input.length;i++){
-			listOnglets.push(new onglet(input[i].value));
-		}
+	var input = contenu.getElementsByTagName("input");
+	for(var i = 0;i<input.length;i++){
+		dict[input[i].id]=input[i].value;
 	}
 }
 

@@ -1,0 +1,12 @@
+<html:table>
+	<html:tr>
+		<html:td>Français</html:td>
+		<html:td>Anglais</html:td>
+	</html:tr>
+	<html:br/>
+	<html:tr>
+		<html:td><textbox id="ListFr-name"/></html:td>
+		<html:td><textbox id="ListUs-name"/></html:td>
+	</html:tr>
+	<html:br/>
+</html:table>
