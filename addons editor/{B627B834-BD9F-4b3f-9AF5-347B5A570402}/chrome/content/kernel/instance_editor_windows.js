@@ -8,118 +8,133 @@ var dict = new Object();
 var onglets = new Object();
 var listOnglets = [];
 var page = "";
+var table;
+var table2;
+var menu;
+var pages;
+
+function createPage(nbPage,parent){
+	this.parent = parent;
+	this.nbPage = nbPage;
+	this.menu = new createTableau(this.nbPage,1,"menu");
+	this.menu.attachOn(this.parent);
+	var br=createElement("br");
+	this.parent.appendChild(br);
+	this.page = [];
+	this.currentPage;
+	
+	for(var i=0 ; this.nbPage>i ; i++){
+		this.menu.setButtonOnCellule(i,0,"onglet"+i,"pages.affichePage("+i+")")
+	}
+
+	this.resize = function(x){
+		this.menu.resize(x,0);
+		this.nbPage+=x;
+		for(var i=this.nbPage-x ; this.nbPage>i ; i++){
+			this.menu.setButtonOnCellule(i,0,"onglet"+i,"pages.affichePage("+i+")")
+		}
+		this.parent.removeChild(br);
+		this.parent.appendChild(br);
+	}
+
+	this.affichePage = function(numPage){
+		for(var i=0 ; this.page.length>i ; i++){
+			this.page[i].dettach();
+		}
+		this.page[numPage].attachOn(this.parent);
+		this.currentPage = this.page[numPage];
+	}
+
+	this.onstart = function(){
+
+		this.page.push(new createTableau(10,10,"tableau"));
+
+		this.page.push(new createTableau(5,5,"tableau2"));
+	
+		/*for(var x=0 ; this.page.length>x ; x++){
+			this.page[x].attachOn(document.getElementById('body'));
+			for(var i=0 ; this.page[x].height>i ; i++){
+				for(var j=0 ; this.page[x].width>j ; j++){
+					this.page[x].setLabelOnCellule(j,i,j+"-"+i);
+				}
+			}
+			this.page[x].dettach();
+		}*/
+	}
+
+	//this.onstart();
+}
 
 function ready(){
 	contenu = document.getElementById("contenu");
+	pages = new createPage(0,document.getElementById('body'));
 	premierePage();
-
+	deuxiemePage();
 }
 
 
 function premierePage(){
-	clear();
-	page="premierePage";
-	var h2=createElement("h2","name_page","Propriétés de l'extension");
-	contenu.appendChild(h2);
-	var label1=createElement("label","name_theme","Nom du thème : ");
-	var input1=createElement("input","inp_name_theme","","text");
-	var label2=createElement("label","vers_theme","Version du thème : ");
-	var input2=createElement("input","inp_vers_theme","","text");
-	var label3=createElement("label","id_inst","ID de l'instance : ");
-	var input3=createElement("input","inp_id_inst","","text");
-	var label4=createElement("label","desc_inst","Description de l'instance : ");
-	var input4=createElement("input","inp_desc_inst","","text");
-	var label5=createElement("label","min_vers","Version minimum de Thunderbird : ");
-	var input5=createElement("input","inp_min_vers","","text");
-	var label6=createElement("label","max_vers","Version maximum de Thunderbird : ");
-	var input6=createElement("input","inp_max_vers","","text");
-	var label7=createElement("label","creator","Créateur de l'instance : ");
-	var input7=createElement("input","inp_creator","","text");
-	
-	
-	arrayElement.push(label1);
-	arrayElement.push(input1);
-	arrayElement.push(label2);
-	arrayElement.push(input2);
-	arrayElement.push(label3);
-	arrayElement.push(input3);
-	arrayElement.push(label4);
-	arrayElement.push(input4);
-	arrayElement.push(label5);
-	arrayElement.push(input5);
-	arrayElement.push(label6);
-	arrayElement.push(input6);
-	arrayElement.push(label7);
-	arrayElement.push(input7);
-	
-	afficheElement(arrayElement);
-	
-}
+	pages.resize(1);
+	pages.page.push(new createTableau(2,8,"intro"));
+	var page1 = pages.page[pages.page.length-1];
 
-function finPremierePage(){
-	//create("install.rdf");
-	//clear();
-	deuxiemePage();
+	var input1=createElement("input","inp_name_theme","","text");
+	var input2=createElement("input","inp_vers_theme","","text");
+	var input3=createElement("input","inp_id_inst","","text");
+	var input4=createElement("input","inp_desc_inst","","text");
+	var input5=createElement("input","inp_min_vers","","text");
+	var input6=createElement("input","inp_max_vers","","text");
+	var input7=createElement("input","inp_creator","","text");
+	var input8=createElement("input","inp_name_inst","","text");
+
+	page1.attachOn(document.getElementById('body'));
+	page1.setLabelOnCellule(0,0,"Nom du thème : ");
+	page1.setLabelOnCellule(0,1,"Version du thème : ");
+	page1.setLabelOnCellule(0,2,"ID de l'instance : ");
+	page1.setLabelOnCellule(0,3,"Description de l'instance : ");
+	page1.setLabelOnCellule(0,4,"Version minimum de Thunderbird : ");
+	page1.setLabelOnCellule(0,5,"Version maximum de Thunderbird : ");
+	page1.setLabelOnCellule(0,6,"Créateur de l'instance : ");
+	page1.setLabelOnCellule(0,7,"Nom de l'instance : ");
+
+	page1.setCellule(1,0,input1);
+	page1.setCellule(1,1,input2);
+	page1.setCellule(1,2,input3);
+	page1.setCellule(1,3,input4);
+	page1.setCellule(1,4,input5);
+	page1.setCellule(1,5,input6);
+	page1.setCellule(1,6,input7);
+	page1.setCellule(1,7,input8);
+	page1.dettach();
+	
 }
 
 function deuxiemePage(){
-	clear();
-	page="deuxiemePage";
-	var h2=createElement("h2","name_page","Propriétés de l'instance");
-	contenu.appendChild(h2);
-	var label1=createElement("label","name_inst","Nom de l'instance : ");
-	var input1=createElement("input","inp_name_inst","","text");
+	pages.resize(1);
+	pages.page.push(new createTableau(2,1,"dictionnaire"));
+	var page2 = pages.page[pages.page.length-1];
 	
-	
-	arrayElement.push(label1);
-	arrayElement.push(input1);
-	
-	afficheElement(arrayElement);
+	page2.attachOn(document.getElementById('body'));
+	page2.setLabelOnCellule(0,0,"Français");
+	page2.setLabelOnCellule(1,0,"Anglais");
 
-}
-
-function finDeuxiemePage(){
-	//create("ximfmail-profile.xml");
-	//clear();
-	troisiemePage();
-}
-
-function troisiemePage(){
-	clear();
-	page="troisiemePage";
-	var h2=createElement("h2","name_page","Dictionnaire de l'instance");
-	contenu.appendChild(h2);
-	var label1=createElement("label","fr","Français");
-	var label2=createElement("label","us","Anglais");
+	var input1=createElement("input","inp-listFr-"+"","","text");
+	input1.setAttribute("onchange","addWorldDict(1);this.removeAttribute(\"onchange\");");
 	
-	arrayElement.push(label1);
-	arrayElement.push(label2);
-	afficheElement(arrayElement);
 	
-	var listFr = hashWithId(dict,"listFr");
-	for (var k in listFr) {
-		if (listFr.hasOwnProperty(k)) {
-			if(listFr[k]!="") addWorldDict(0);
-		}
-	}
-	
-	addWorldDict(1);
+	addWorldDict(page2);
+	addWorldDict(page2);
+	page2.dettach();
 	
 }
 
-function addWorldDict(change){
-	arrayElement.length=0;
-	var input1=createElement("input","inp-listFr-"+contenu.getElementsByTagName("input").length/2+"","","text");
-	var input2=createElement("input","inp-listUs-"+contenu.getElementsByTagName("input").length/2+"","","text");
-	if(change==1) input1.setAttribute("onchange","addWorldDict(1);this.removeAttribute(\"onchange\");");
-	
-	arrayElement.push(input1);
-	arrayElement.push(input2);
-	afficheElement(arrayElement);
-}
-
-function finTroisiemePage(){
-	quatriemePage();
+function addWorldDict(page){
+	var input1=createElement("input","inp-listFr-"+(page.height-1),"","text");
+	var input2=createElement("input","inp-listUs-"+(page.height-1),"","text");
+	input1.setAttribute("onchange","addWorldDict(pages.currentPage);this.removeAttribute(\"onchange\");");
+	page.resize(0,1);
+	page.setCellule(0,page.height-1,input1);
+	page.setCellule(1,page.height-1,input2);
 }
 
 /*
@@ -158,13 +173,10 @@ function addOnglet(change){
 }
 */
 
-function quatriemePage(){
-	clear();
-	page="quatriemePage";
-	var h2=createElement("h2","name_page","Onglets de l'instance");
-	contenu.appendChild(h2);
+function troisiemePage(){
+	pages.resize(1);
+	pages.page.push(new createTableau(2,1,"onglets"));
 	
-	addOnglet(1);
 }
 
 function addOnglet(change){
@@ -363,11 +375,6 @@ function getFilePathInProfile(aRelativePath) {
            file.append(path[i]);
     }
     return file.path;
-}
-
-function test(){
-	finDeuxiemePage();
-
 }
 
 function createRdf(name_theme,vers_theme,id_inst,desc_inst,min_vers,max_vers,creator){
@@ -582,6 +589,106 @@ function afficher(){
 		// use hasOwnProperty to filter out keys from the Object.prototype
 		if (dict.hasOwnProperty(k)) {
 			gConsole.logStringMessage('key is: ' + k + ', value is: ' + dict[k]);
+		}
+	}
+}
+
+
+
+
+function createTableau(width,height,id){
+
+	this.createElement = function(tag,id,value,type){
+		if(tag=="label" || tag=="table"){ var ele = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "html:"+tag);}
+		else{ var ele = document.createElementNS("http://www.w3.org/1999/xhtml", tag);}
+		if(id!=null)ele.setAttribute("id", id);
+		if(value!=null)ele.setAttribute("value", value);
+		if(type!=null)ele.setAttribute("type", type);
+		return ele;
+	};
+
+	this.width = width;
+	this.height = height;
+	this.id = id;
+	this.parent;
+	
+	this.table = this.createElement("table",this.id);
+	var tr;
+	var td;
+	for(var i=0 ; this.height>i ; i++){
+		tr = this.createElement("tr");
+		this.table.appendChild(tr);
+		for(var j=0 ; this.width>j ; j++){
+			td = this.createElement("td",this.id+"coord"+i+"x"+j);
+			td.setAttribute("style","border-style:solid");
+			tr.appendChild(td);
+		}
+	}
+
+	this.resize = function(x,y){
+		this.width +=x;
+		this.height +=y;
+
+		var tabletmp = this.createElement("table",this.id);
+		var tr;
+		var td;
+		for(var i=0 ; this.height>i ; i++){
+			tr = this.createElement("tr");
+			tabletmp.appendChild(tr);
+			for(var j=0 ; this.width>j ; j++){
+				if(this.getCellule(j,i)) tr.appendChild(this.getCellule(j,i));
+				else{
+				td = this.createElement("td",this.id+"coord"+i+"x"+j);
+				td.setAttribute("style","border-style:solid");
+				tr.appendChild(td);}
+			}
+		}
+		while(this.table.firstChild) this.table.removeChild(this.table.firstChild);
+		this.table = tabletmp;
+		if(this.parent) this.attachOn(this.parent);
+	}
+	
+	this.getCellule = function(x,y){
+		return document.getElementById(this.id+"coord"+y+"x"+x);
+	};
+	
+	this.setCellule = function(x,y,element){
+		document.getElementById(this.id+"coord"+y+"x"+x).appendChild(element);
+	};
+
+	this.setLabelOnCellule = function(x,y,label){
+		var lab = this.createElement("label","",label);
+		document.getElementById(this.id+"coord"+y+"x"+x).appendChild(lab);
+	};
+
+	this.setButtonOnCellule = function(x,y,label,command){
+		var but = this.createElement("input","",label,"button");
+		but.setAttribute("onclick",command);
+		document.getElementById(this.id+"coord"+y+"x"+x).appendChild(but);
+	};
+	
+	this.clearCellule = function(x,y){
+		var cellule = document.getElementById(this.id+"coord"+y+"x"+x);
+		while(cellule.firstChild) cellule.removeChild(cellule.firstChild);
+	};
+	
+	this.clearAll = function(){
+		for(var i=0 ; height>i ; i++){
+			for(var j=0 ; width>j ; j++){
+				this.clearCellule(i,j);
+			}
+		}
+	};
+
+	this.attachOn = function(element){
+		element.appendChild(this.table);
+		this.parent = element;
+	};
+
+	this.dettach = function(){
+		if(this.parent){
+			this.parent.removeChild(this.table);
+			this.parent=null;
 		}
 	}
 }

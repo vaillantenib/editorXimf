@@ -15,20 +15,13 @@
 		<html:h1>Création d'une instance XIMFMail</html:h1>
 	</header>
 	
-	<html:body onload="ready()">
+	<html:body onload="ready()" id="body">
 				<html:table id="contenu">
 				</html:table>
 	</html:body>
 	
 	<footer>
-		<html:input type="button" name="Clear" value="Clear" onclick="clear()"/>
-		<html:input type="button" name="premiere Page" value="extension" onclick="premierePage()"/>
-		<html:input type="button" name="deuxieme Page" value="instance" onclick="finPremierePage()"/>
-		<html:input type="button" name="troisième Page" value="dictionnaire" onclick="finDeuxiemePage()"/>
-		<html:input type="button" name="quatrième Page" value="onglets" onclick="finTroisiemePage()"/>
-		<html:input type="button" name="create" value="Create" onclick="create()"/>
-		<html:input type="button" name="save" value="Save" onclick="save()"/>
-		<html:input type="button" name="afficher" value="Afficher" onclick="afficher()"/>
+
 	</footer>
 	
 </window>
