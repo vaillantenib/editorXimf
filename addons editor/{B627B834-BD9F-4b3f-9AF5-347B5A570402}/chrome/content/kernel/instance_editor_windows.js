@@ -2,6 +2,8 @@
 
 var gConsole = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 var contenu;
+var save = new Object();
+var pageId = new Object();
 var arrayElement = [];
 var arrayOnglet = [];
 var dict = new Object();
@@ -12,11 +14,15 @@ var table;
 var table2;
 var menu;
 var pages;
+var example;
+var ilk = [];
 
-function createPage(nbPage,parent){
+function createPage(nbPage,parent,id){
+	this.id = id;
+	pageId[this.id]=this;
 	this.parent = parent;
 	this.nbPage = nbPage;
-	this.menu = new createTableau(this.nbPage,1,"menu");
+	this.menu = new createTableau(this.nbPage,1,this.id+"menu");
 	this.menu.attachOn(this.parent);
 	var br=createElement("br");
 	this.parent.appendChild(br);
@@ -24,15 +30,16 @@ function createPage(nbPage,parent){
 	this.currentPage;
 	
 	for(var i=0 ; this.nbPage>i ; i++){
-		this.menu.setButtonOnCellule(i,0,"onglet"+i,"pages.affichePage("+i+")")
+		this.menu.setButtonOnCellule(i,0,"onglet"+i,"pageId[\""+this.id+"\"].affichePage("+i+")")
 	}
 
 	this.resize = function(x){
-		this.menu.resize(x,0);
-		this.nbPage+=x;
-		for(var i=this.nbPage-x ; this.nbPage>i ; i++){
-			this.menu.setButtonOnCellule(i,0,"onglet"+i,"pages.affichePage("+i+")")
+		this.menu.resize(x,this.menu.height);
+		
+		for(var i=this.nbPage ; x>i ; i++){
+			this.menu.setButtonOnCellule(i,0,"onglet"+i,"pageId[\""+this.id+"\"].affichePage("+i+")")
 		}
+		this.nbPage=x;
 		this.parent.removeChild(br);
 		this.parent.appendChild(br);
 	}
@@ -42,7 +49,7 @@ function createPage(nbPage,parent){
 			this.page[i].dettach();
 		}
 		this.page[numPage].attachOn(this.parent);
-		this.currentPage = this.page[numPage];
+		this.currentPage = numPage;
 	}
 
 	this.onstart = function(){
@@ -67,14 +74,18 @@ function createPage(nbPage,parent){
 
 function ready(){
 	contenu = document.getElementById("contenu");
-	pages = new createPage(0,document.getElementById('body'));
+	pages = new createPage(0,document.getElementById('body'),"principal");
 	premierePage();
 	deuxiemePage();
+	troisiemePage();
 }
 
+function test(){
+	gConsole.logStringMessage(save["select1x1"].value);
+}
 
 function premierePage(){
-	pages.resize(1);
+	pages.resize(pages.nbPage+1);
 	pages.page.push(new createTableau(2,8,"intro"));
 	var page1 = pages.page[pages.page.length-1];
 
@@ -110,17 +121,13 @@ function premierePage(){
 }
 
 function deuxiemePage(){
-	pages.resize(1);
+	pages.resize(pages.nbPage+1);
 	pages.page.push(new createTableau(2,1,"dictionnaire"));
 	var page2 = pages.page[pages.page.length-1];
 	
 	page2.attachOn(document.getElementById('body'));
 	page2.setLabelOnCellule(0,0,"Français");
-	page2.setLabelOnCellule(1,0,"Anglais");
-
-	var input1=createElement("input","inp-listFr-"+"","","text");
-	input1.setAttribute("onchange","addWorldDict(1);this.removeAttribute(\"onchange\");");
-	
+	page2.setLabelOnCellule(1,0,"Anglais");	
 	
 	addWorldDict(page2);
 	addWorldDict(page2);
@@ -131,8 +138,8 @@ function deuxiemePage(){
 function addWorldDict(page){
 	var input1=createElement("input","inp-listFr-"+(page.height-1),"","text");
 	var input2=createElement("input","inp-listUs-"+(page.height-1),"","text");
-	input1.setAttribute("onchange","addWorldDict(pages.currentPage);this.removeAttribute(\"onchange\");");
-	page.resize(0,1);
+	input1.setAttribute("onchange","addWorldDict(pages.page[pages.currentPage]);this.removeAttribute(\"onchange\");");
+	page.resize(page.width,page.height+1);
 	page.setCellule(0,page.height-1,input1);
 	page.setCellule(1,page.height-1,input2);
 }
@@ -174,81 +181,140 @@ function addOnglet(change){
 */
 
 function troisiemePage(){
-	pages.resize(1);
+	pages.resize(pages.nbPage+1);
 	pages.page.push(new createTableau(2,1,"onglets"));
+	var page3 = pages.page[pages.page.length-1];
 	
+	page3.attachOn(document.getElementById('body'));
+	page3.setButtonOnCellule(0,0,"Add onglet","addOnglet()");
+	example = new createPage(0,page3.getCellule(1,0),"example");
+
+	page3.dettach();
 }
 
-function addOnglet(change){
-	if(arrayOnglet.length<5){
-		var button1=createElement("input","onglet"+arrayOnglet.length,"","text");
-		if(change==1) button1.setAttribute("onchange","addOnglet();this.removeAttribute(\"onchange\");");
-		//button1.setAttribute("onclick","onglet"+arrayOnglet.length+"();");
-		var button2=createElement("input","onglet"+(arrayOnglet.length+1),"","text");
-		if(change==1) button2.setAttribute("onchange","addOnglet();this.removeAttribute(\"onchange\");");
-		//button2.setAttribute("onclick","onglet"+(arrayOnglet.length+1)+"();");
-		
-		arrayOnglet.push(button1);
-		arrayOnglet.push(button2);
+function addOnglet(){
+	example.resize(example.nbPage+1);
+	example.page.push(new createTableau(5,9,"onglet"+example.page.length));
+	var pageexample = example.page[example.page.length-1];
+	pageexample.attachOn(document.getElementById('body'));
+
+	pageexample.setLabelOnCellule(0,0,"Nom de l'onglet :");
+	pageexample.setLabelOnCellule(0,1,"Intitulé du champs :");
+	pageexample.setLabelOnCellule(0,2,"Champs Obligatoire :");
+	pageexample.setLabelOnCellule(0,3,"Type de champs :");
+
+	pageexample.setLabelOnCellule(0,4,"Option 1 :");
+	pageexample.setLabelOnCellule(0,5,"Option 2 :");
+	pageexample.setLabelOnCellule(0,6,"Option 3 :");
+	pageexample.setLabelOnCellule(0,7,"Option 4 :");
+	pageexample.setLabelOnCellule(0,8,"Option 5 :");
+
+	var input1=createElement("input","inp_name_onglet"+example.page.length,"","text");
+	pageexample.setCellule(1,0,input1);
+
+	for(var x=1 ; 4>=x ; x++){
+		var input2=createElement("input","inp_name_champs"+example.page.length+"x"+x,"","text");
+		var selectMandatory=createElement("select","selectMandatory"+example.page.length+"x"+x,"","",["Non","Oui"]);
+		var selectType=createElement("select","selectType"+example.page.length+"x"+x,"","",["champs éditable","liste"]);
+		selectType.setAttribute("onchange","selectChange(this,"+x+");");
+
+		pageexample.setCellule(x,1,input2);
+		pageexample.setCellule(x,2,selectMandatory);
+		pageexample.setCellule(x,3,selectType);
 	}
-	clear();
-	addLigne(arrayOnglet);
+	pageexample.dettach();
+
+	if(example.currentPage!=null) example.affichePage(example.currentPage);
 }
 
-function onglet0(){
-	var table=createElement("table","table"+arrayOnglet.length,"","");
-}
-
-function onglet1(){
-	var table=createElement("table","table"+arrayOnglet.length,"","");
-}
-
-function onglet2(){
-	var table=createElement("table","table"+arrayOnglet.length,"","");
-}
-
-function onglet3(){
-	var table=createElement("table","table"+arrayOnglet.length,"","");
-}
-
-function onglet4(){
-	var table=createElement("table","table"+arrayOnglet.length,"","");
-}
-
-function onglet5(){
-	var table=createElement("table","table"+arrayOnglet.length,"","");
-}
-
-function afficheElement(array){
-	var tr;
-	var td;
-	for(var i=0 ; array.length>i+1 ; i+=2){
-		br=createElement("br");
-		tr=createElement("tr");
-		contenu.appendChild(tr);
-		td=createElement("td");
-		tr.appendChild(td);
-		td.appendChild(array[i]);
-		td=createElement("td");
-		tr.appendChild(td);
-		td.appendChild(array[i+1]);
-		contenu.appendChild(br);
+function selectChange(ele,col){
+	if(ele.value=="liste"){
+		addForList(example.page[example.currentPage],col);
+	}else{
+		removeForList(example.page[example.currentPage],col);
 	}
 }
 
-function addLigne(array){
-	var tr;
-	tr=createElement("tr");
-	var td;
-	contenu.appendChild(tr);
-	for(var i=0 ; array.length>i ; i++){
-		td=createElement("td");
-		td.appendChild(array[i]);
-		tr.appendChild(td);
-	}
+function addForList(page,col){
+	
+	var option1=createElement("input","option1"+(example.currentPage+1)+"x"+col,"","text");
+	var option2=createElement("input","option2"+(example.currentPage+1)+"x"+col,"","text");
+	var option3=createElement("input","option3"+(example.currentPage+1)+"x"+col,"","text");
+	var option4=createElement("input","option4"+(example.currentPage+1)+"x"+col,"","text");
+	var option5=createElement("input","option5"+(example.currentPage+1)+"x"+col,"","text");
+
+	page.setCellule(col,4,option1);
+	page.setCellule(col,5,option2);
+	page.setCellule(col,6,option3);
+	page.setCellule(col,7,option4);
+	page.setCellule(col,8,option5);
+}
+
+function removeForList(page,col){
+	page.clearCellule(col,4);
+	page.clearCellule(col,5);
+	page.clearCellule(col,6);
+	page.clearCellule(col,7);
+	page.clearCellule(col,8);
 }
 
 function create(){
+
+	var name_theme=save["inp_name_theme"].value;
+	var vers_theme=save["inp_vers_theme"].value;
+	var id_inst=save["inp_id_inst"].value;
+	var desc_inst=save["inp_desc_inst"].value;
+	var min_vers=save["inp_min_vers"].value;
+	var max_vers=save["inp_max_vers"].value;
+	var creator=save["inp_creator"].value;
+	var name_inst=save["inp_name_inst"].value;
+	var listFr = hashWithId(save,"listFr");
+	var listUs = hashWithId(save,"listUs");
+
+	var listObjectStatic = [];
+	var listObjectDyn = [];
+	var listOnglets = [];
+	var listAssociations = [];
+
+	var name_onglet = hashWithId(save,"inp_name_onglet");
+
+	for (var j in name_onglet) {
+		if (name_onglet.hasOwnProperty(j)) {
+			//alert();
+			var ongletId = j.slice(-1,j.length);
+			var ongletObj = new onglet(name_onglet[j]);
+			var groupObj = new group(name_onglet[j]);
+			
+			
+			var name_champs = hashWithId(save,"inp_name_champs"+ongletId);
+			var selectType = hashWithId(save,"selectType"+ongletId);
+			var selectMandatory = hashWithId(save,"selectMandatory"+ongletId);
+
+			for (var k in name_champs) {
+				if (name_champs.hasOwnProperty(k)) {
+					var id = k.slice(-2,k.length);
+					var object = new objectDyn(name_champs[k],selectType["selectType"+ongletId+id],selectMandatory["selectMandatory"+ongletId+id]);
+					if(selectType["selectType"+ongletId+id]=="liste"){
+						for(var x=1 ; 5>=x ; x++){
+							if(save["option"+x+ongletId+id].value!=""){
+								object.addOptions(save["option"+x+ongletId+id].value);
+							}
+						}
+					}
+					listObjectDyn.push(object);
+					groupObj.addElement(object);
+				}
+			}
+			ongletObj.addGroup(groupObj);
+			listOnglets.push(ongletObj);
+		}
+	}
+
+	if(name_theme==""||vers_theme==""||id_inst==""||desc_inst==""||min_vers==""||max_vers==""||creator==""||name_inst==""||listFr.length==0||listUs.length==0){
+		alert("Manque valeur !");
+		return;
+	}
+
 	var file="";
 	var file = Components.classes["@mozilla.org/file/directory_service;1"]
                      .getService(Components.interfaces.nsIProperties)
@@ -259,26 +325,19 @@ function create(){
 	   file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0664);
 	}
 	
-	var name_theme=dict["inp_name_theme"];
 	
-	file.append(name_theme);
+	
+	file.append(name_theme+"@dga.tld");
 	if( !file.exists() || !file.isDirectory() ) {   // S'il n'existe pas, le créer
 	   file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0664);
 	}
 
-	var sPath=getFilePathInProfile("extensions/"+name_theme+"/"+"install.rdf");
-	
-	var vers_theme=dict["inp_vers_theme"];
-	var id_inst=dict["inp_id_inst"];
-	var desc_inst=dict["inp_desc_inst"];
-	var min_vers=dict["inp_min_vers"];
-	var max_vers=dict["inp_max_vers"];
-	var creator=dict["inp_creator"];
+	var sPath=getFilePathInProfile("extensions/"+name_theme+"@dga.tld"+"/"+"install.rdf");
 	
 	var data = createRdf(name_theme,vers_theme,id_inst,desc_inst,min_vers,max_vers,creator);
 	createFile(sPath,data);
 	
-	sPath=getFilePathInProfile("extensions/"+name_theme+"/"+"chrome.manifest");
+	sPath=getFilePathInProfile("extensions/"+name_theme+"@dga.tld"+"/"+"chrome.manifest");
 	data = createManifest();
 	createFile(sPath,data);
 	
@@ -292,34 +351,29 @@ function create(){
 	   file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0664);
 	}
 	
-	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+"ximfmail-profile.xml");
-	var name_inst=dict["inp_name_inst"];
+	sPath=getFilePathInProfile("extensions/"+name_theme+"@dga.tld"+"/chrome/content/"+"ximfmail-profile.xml");
+	
 	data = createXimfProfile(name_theme,name_inst,id_inst);
 	createFile(sPath,data);
 	
-	file.append(name_theme);
+	file.append("Instance");
 	if( !file.exists() || !file.isDirectory() ) {   // S'il n'existe pas, le créer
 	   file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0664);
 	}
 	
-	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+name_theme+"/dictionary-"+name_theme+".xml");
-	var listFr = hashWithId(dict,"listFr");
-	var listUs = hashWithId(dict,"listUs");
+	sPath=getFilePathInProfile("extensions/"+name_theme+"@dga.tld"+"/chrome/content/"+"Instance"+"/dictionary-"+name_inst+".xml");
+	
 	data = createDictionnary(name_inst,listFr,listUs);
 	createFile(sPath,data);
-	
-	listOnglets.push(new onglet("name")); 
-	new group("name");
-	
-	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+name_theme+"/headers-"+name_theme+".xml");
+	sPath=getFilePathInProfile("extensions/"+name_theme+"@dga.tld"+"/chrome/content/"+"Instance"+"/headers-"+name_inst+".xml");
 	data = createHeaders(name_inst,listObjectStatic,listObjectDyn);
 	createFile(sPath,data);
-	
-	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+name_theme+"/ihm-"+name_theme+".xml");
+
+	sPath=getFilePathInProfile("extensions/"+name_theme+"@dga.tld"+"/chrome/content/"+"Instance"+"/ihm-"+name_inst+".xml");
 	data = createIhm(name_inst,listOnglets);
 	createFile(sPath,data);
 	
-	sPath=getFilePathInProfile("extensions/"+name_theme+"/chrome/content/"+name_theme+"/rules-"+name_theme+".xml");
+	sPath=getFilePathInProfile("extensions/"+name_theme+"@dga.tld"+"/chrome/content/"+"Instance"+"/rules-"+name_inst+".xml");
 	data = createRules(name_inst,listAssociations);
 	createFile(sPath,data);
 	
@@ -330,8 +384,8 @@ function hashWithId(hash,id){
 	var return_hash = new Object();
 	for (var k in hash) {
 		if (hash.hasOwnProperty(k)) {
-			if(k.match(id)){
-				return_hash[k]=hash[k];
+			if(k.match(id) && hash[k].value!=""){
+				return_hash[k]=hash[k].value;
 			}
 		}
 	}
@@ -352,14 +406,22 @@ function createFile(sPath,data){
 	converter.close();
 }
 
-function createElement(tag,id="",value="",type=""){
+function createElement(tag,id="",value="",type="",options=[]){
 	if(tag=="label" || tag=="table"){ var ele = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "html:"+tag);}
 	else{ var ele = document.createElementNS("http://www.w3.org/1999/xhtml", tag);}
-	//if(tag=="input"){dict[id]="";}
 	if(id!="")ele.setAttribute("id", id);
 	if(value!="")ele.setAttribute("value", value);
-	if(dict[id] && dict[id]!="")ele.setAttribute("value", dict[id]);
 	if(type!="")ele.setAttribute("type", type);
+	if(tag=="select"){
+		var option;
+		for(var i=0 ; options.length>i ; i++){
+			option = document.createElementNS("http://www.w3.org/1999/xhtml", "option");
+			option.setAttribute("value",options[i]);
+			option.innerHTML = options[i];
+			ele.appendChild(option);
+		}
+	}
+	if(tag=="input" || tag=="select"){save[id]=ele;}
 	return ele;
 }
 
@@ -379,7 +441,7 @@ function getFilePathInProfile(aRelativePath) {
 
 function createRdf(name_theme,vers_theme,id_inst,desc_inst,min_vers,max_vers,creator){
 	var data = 
-	"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<RDF xmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:em=\"http://www.mozilla.org/2004/em-rdf#\">\n  <Description about=\"urn:mozilla:install-manifest\">\n    <em:name>"+name_theme+"</em:name>\n    <em:version>"+vers_theme+"</em:version>\n    <em:unpack>true</em:unpack>\n    <em:id>"+id_inst+"</em:id>\n    <em:description>"+desc_inst+"</em:description>\n    <em:targetApplication>\n      <!-- Thunderbird -->\n      <Description>\n       <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>\n       <em:minVersion>"+min_vers+"</em:minVersion>\n       <em:maxVersion>"+max_vers+"</em:maxVersion>\n      </Description>\n    </em:targetApplication>\n <em:creator>"+creator+"</em:creator>\n </Description>\n</RDF>";
+	"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<RDF xmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:em=\"http://www.mozilla.org/2004/em-rdf#\">\n  <Description about=\"urn:mozilla:install-manifest\">\n    <em:name>"+name_theme+"</em:name>\n    <em:version>"+vers_theme+"</em:version>\n    <em:unpack>true</em:unpack>\n    <em:id>"+name_theme+"@dga.tld"+"</em:id>\n    <em:description>"+desc_inst+"</em:description>\n    <em:targetApplication>\n      <!-- Thunderbird -->\n      <Description>\n       <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>\n       <em:minVersion>"+min_vers+"</em:minVersion>\n       <em:maxVersion>"+max_vers+"</em:maxVersion>\n      </Description>\n    </em:targetApplication>\n <em:creator>"+creator+"</em:creator>\n </Description>\n</RDF>";
 	return data;
 }
 
@@ -389,34 +451,29 @@ function createManifest(){
 }
 
 function createXimfProfile(name_theme,name_inst,id_inst){
-	var data = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<profile>\n	<theme name=\" "+ name_theme + "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"D:\\DOC\\DOC_THUN_INTRACED\\ximf_profile.xsd\">\n		<instance id=\"smtp\" ximfVersion=\"2.0\" version=\"1.0\" label=\"Message standard\" name=\"smtp\" directory=\"\" author=\"string\"/>\n		<instance id=\"id"+name_inst+"Definition\" ximfVersion=\"2.0\" version=\"1.0\"\n			name=\""+name_inst+"\"\n			directory=\""+id_inst+"/chrome/content/Instance/\"\n			author=\"Ximfmail\">\n			<schema id=\"AAAAB\" name=\""+name_inst+"\">headers-"+name_inst+".xml</schema>\n			<dictionary author=\"EADS DS\">dictionary-"+name_inst+".xml</dictionary>\n			<ihm id=\"AAAAC\" name=\"string\">ihm-"+name_inst+".xml</ihm>			<rule id=\"AAAAD\" author=\"string\">rules-"+name_inst+".xml</rule>\n		</instance>\n	</theme>\n</profile>";
+	var data = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<profile>\n	<theme name=\" "+ name_theme + "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"D:\\DOC\\DOC_THUN_INTRACED\\ximf_profile.xsd\">\n		<instance id=\"smtp\" ximfVersion=\"2.0\" version=\"1.0\" label=\"Message standard\" name=\"smtp\" directory=\"\" author=\"string\"/>\n		<instance id=\"id"+name_inst+"Definition\" ximfVersion=\"2.0\" version=\"1.0\"\n			name=\""+name_inst+"\"\n			directory=\""+name_theme+"@dga.tld"+"/chrome/content/Instance/\"\n			author=\"Ximfmail\">\n			<schema id=\"AAAAB\" name=\""+name_inst+"\">headers-"+name_inst+".xml</schema>\n			<dictionary author=\"EADS DS\">dictionary-"+name_inst+".xml</dictionary>\n			<ihm id=\"AAAAC\" name=\"string\">ihm-"+name_inst+".xml</ihm>\n			<rule id=\"AAAAD\" author=\"string\">rules-"+name_inst+".xml</rule>\n		</instance>\n	</theme>\n</profile>";
 	return data;
-}
-
-function clear(){
-	save();
-	page ="";
-	arrayElement.length=0;
-	while(contenu.firstChild) contenu.removeChild(contenu.firstChild);
 }
 
 function createDictionnary(name_inst,listFr,listUs){
 	var data="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<ximf:instance name=\""+name_inst+"\" version=\"1.0\" ximfVersion=\"2.0\" xmlns:ximf=\"http://eads.org/ximf/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://eads.org/ximf/ ximf.xsd\">\n\t<ximf:dictionary id=\"OneDico\">\n\t\t<ximf:locale lang=\"fr\">\n";
 	var tripleTab = "\t\t\t";
-	
+	ilk = [];
+	var g = 0;
 	for (var k in listFr) {
 		if (listFr.hasOwnProperty(k)) {
 			data += tripleTab;
-			data += "<ximf:ilk entity=\"ilk-"+stringToIlk(listFr[k])+"\">"+listFr[k]+"</ximf:ilk>\n";			
+			ilk.push(stringToIlk(listFr[k]));
+			data += "<ximf:ilk entity=\"ilk-"+ilk[g++]+"\">"+listFr[k]+"</ximf:ilk>\n";			
 		}
 	}
 	
 	data += "\t\t</ximf:locale>\n\t\t<ximf:locale lang=\"en-US\">\n";
-	
+	g = 0;
 	for (var k in listUs) {
 		if (listUs.hasOwnProperty(k)) {
 			data += tripleTab;
-			data += "<ximf:ilk entity=\"ilk-"+stringToIlk(listUs[k])+"\">"+listUs[k]+"</ximf:ilk>\n";			
+			data += "<ximf:ilk entity=\"ilk-"+ilk[g++]+"\">"+listUs[k]+"</ximf:ilk>\n";			
 		}
 	}
 	
@@ -440,21 +497,25 @@ function createHeaders(name_inst,listObjectStatic,listObjectDyn){
 	
 	for (var k in listObjectStatic) {
 			data += espace;
-			data += "<ximf:header id=\"header-"+k.name+"\" headerName=\"X-XIMF-"+k.name+"\" >\t\t\r\n\t\t<ximf:string content=\""+k.value+"\"/>\r\n\t</ximf:header>\r";
+			data += "<ximf:header id=\"header-"+listObjectStatic[k].name+"\" headerName=\"X-XIMF-"+listObjectStatic[k].name+"\" >\t\t\r\n\t\t<ximf:string content=\""+listObjectStatic[k].value+"\"/>\r\n\t</ximf:header>\r";
 	}
 	
 	for (var k in listObjectDyn) {
+			alert(listObjectDyn[0].name);
+			alert(k);
+			alert(k.name);
 			data += espace;
-			data += "<ximf:header id=\"header-"+k.name+"\" \r\n\t\t\t\t headerName=\"X-XIMF-"+k.name+"\"\r\n\t\t\t\t type=\""+k.type+"\"\r\n\t\t\t\t ilk=\"ilk-"+k.name+"\"\r\n\t\t\t\t isMandatory=\""+k.mandatory+"\">\r";
-			data += "\n\t\t<ximf:set id=\"value-"+k.name+"\">\r";
-			if(k.type == "date"){
-				data += "\n\t\t\t<ximf:string id=\"value-"+k.name+"\" editable=\"true\" />\r";
+			data += "<ximf:header id=\"header-"+listObjectDyn[k].name+"\" \r\n\t\t\t\t headerName=\"X-XIMF-"+listObjectDyn[k].name+"\"\r\n\t\t\t\t type=\""+((listObjectDyn[k].type=="date")?"date":"string")+"\"\r\n\t\t\t\t ilk=\""+((findArray(ilk,listObjectDyn[k].name)!=-1)?"ilk-":"")+listObjectDyn[k].name+"\"\r\n\t\t\t\t isMandatory=\""+((listObjectDyn[k].mandatory=="Oui")?"true":"false")+"\">\r";
+			
+			if(listObjectDyn[k].type == "liste"){
+				data += "\n\t\t<ximf:set id=\"value-"+listObjectDyn[k].name+"\">\r";
+				for( var i in listObjectDyn[k].options){
+					data += "\n\t\t\t<ximf:string ilk=\""+((findArray(ilk,listObjectDyn[k].options[i])!=-1)?"ilk-":"")+listObjectDyn[k].options[i]+"\" content=\""+listObjectDyn[k].options[i]+"\"/>\r";
+				}
+				data += "\n\t\t</ximf:set>\r";
 			}else{
-				for( var i in k.options){
-					data += "\n\t\t\t<ximf:string ilk=\"ilk-"+i+"\" content=\""+i+"\"/>\r";
-				}			
+				data += "\n\t\t<ximf:string id=\"value-"+listObjectDyn[k].name+"\" editable=\"true\" />\r";
 			}
-			data += "\n\t\t</ximf:set>\r";
 			data += "\n\t</ximf:header>\r";
 	}
 	
@@ -517,13 +578,14 @@ function association(contraint,condition){
 function createIhm(name_inst,listOnglets){
 	var data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<ximf:instance name=\""+name_inst+"\" version=\"1.0\" ximfVersion=\"2.0\" xmlns:ximf=\"http://eads.org/ximf/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://eads.org/ximf/ ximf.xsd\">\r";
 	data += "\n<ximf:ihm xmlns:ximf=\"http://eads.org/ximf/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r";
-	
+	alert(listOnglets.length);
 	for (var k in listOnglets) {
-		data += "\n\t<ximf:panel id=\"pane_"+k.name+"\" ilk=\"ilk-"+k.name+"\">\r";
-		for (var j in k.groups) {
-			data += "\n\t\t<ximf:groupbox id=\"group-"+j.name+"\" ilk=\"ilk-"+j.name+"\">\r";
-			for (var i in j.elements) {
-				data += "\n\t\t\t<ximf:headerRef>header-"+i.name+"</ximf:headerRef>\r";
+		alert("listOnglets");
+		data += "\n\t<ximf:panel id=\"pane_"+listOnglets[k].name+"\" ilk=\""+((findArray(ilk,listOnglets[k].name)!=-1)?"ilk-":"")+listOnglets[k].name+"\">\r";
+		for (var j in listOnglets[k].groups) {
+			data += "\n\t\t<ximf:groupbox id=\"group-"+listOnglets[k].groups[j].name+"\" ilk=\""+((findArray(ilk,listOnglets[k].groups[j].name)!=-1)?"ilk-":"")+listOnglets[k].groups[j].name+"\">\r";
+			for (var i in listOnglets[k].groups[j].elements) {
+				data += "\n\t\t\t<ximf:headerRef>header-"+listOnglets[k].groups[j].elements[i].name+"</ximf:headerRef>\r";
 			}
 			data += "\n\t\t</ximf:groupbox>\r";
 		}
@@ -539,24 +601,24 @@ function createRules(name_inst,listAssociations){
 	for (var k in listAssociations) {
 		data += "\n\t<ximf:rule id=\"compatibility-rule\" description=\"Règle sur la compatibilités X-SMTP / XIMF\" >\r";
 		data += "\n\t\t<ximf:association>\r";
-		data += "\n\t\t\t\t<ximf:aliasHeader headerName=\"X-XIMF-"+k.contraint.name+"\" headerRef=\"X-XIMF-"+k.condition.name+"\">\r";
-		for (var j in k.rules) {
+		data += "\n\t\t\t\t<ximf:aliasHeader headerName=\"X-XIMF-"+listAssociations[k].contraint.name+"\" headerRef=\"X-XIMF-"+listAssociations[k].condition.name+"\">\r";
+		for (var j in listAssociations[k].rules) {
 			data += "\n\t\t\t\t<ximf:aliasValue valueName=\"";
 			var bool=1;
-			for (var i in j[0]) {
+			for (var i in listAssociations[k].rules[0]) {
 				if(bool!=1){
 					data += ",";
 				}
-				data += i;
+				data += listAssociations[k].rules[0][i];
 				bool=0;
 			}
 			bool=1;
 			data += "\" valueRef=\"";
-			for (var i in j[1]) {
+			for (var i in listAssociations[k].rules[1]) {
 				if(bool!=1){
 					data += ",";
 				}
-				data += i;
+				data += listAssociations[k].rules[1][i];
 				bool=0;
 			}
 			data += "\" />\r";
@@ -569,41 +631,31 @@ function createRules(name_inst,listAssociations){
 	return data;
 }
 
-function save(){
-	if(page == "premierePage" || page=="deuxiemePage" || page == "troisiemePage"){
-		var input = contenu.getElementsByTagName("input");
-		for(var i = 0;i<input.length;i++){
-			dict[input[i].id]=input[i].value;
-		}
-	}
-	else if(page == "quatriemePage"){
-		var input = contenu.getElementsByTagName("input");
-		for(var i = 0;i<input.length;i++){
-			listOnglets.push(new onglet(input[i].value));
-		}
-	}
-}
-
 function afficher(){
-	for (var k in dict) {
+	for (var k in save) {
 		// use hasOwnProperty to filter out keys from the Object.prototype
-		if (dict.hasOwnProperty(k)) {
-			gConsole.logStringMessage('key is: ' + k + ', value is: ' + dict[k]);
+		if (save.hasOwnProperty(k)) {
+			gConsole.logStringMessage('key is: ' + k + ', value is: ' + save[k]);
 		}
 	}
 }
-
-
-
 
 function createTableau(width,height,id){
 
-	this.createElement = function(tag,id,value,type){
+	this.createElement = function(tag,id,value,type,options){
 		if(tag=="label" || tag=="table"){ var ele = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "html:"+tag);}
 		else{ var ele = document.createElementNS("http://www.w3.org/1999/xhtml", tag);}
 		if(id!=null)ele.setAttribute("id", id);
 		if(value!=null)ele.setAttribute("value", value);
 		if(type!=null)ele.setAttribute("type", type);
+		if(tag=="select"){
+			var option;
+			for(var i=0 ; options.length>i ; i++){
+				option = document.createElementNS("http://www.w3.org/1999/xhtml", "option");
+				option.setAttribute("value",options[i]);
+				option.innerHTML = options[i];
+			}
+		}
 		return ele;
 	};
 
@@ -611,7 +663,7 @@ function createTableau(width,height,id){
 	this.height = height;
 	this.id = id;
 	this.parent;
-	
+
 	this.table = this.createElement("table",this.id);
 	var tr;
 	var td;
@@ -626,9 +678,8 @@ function createTableau(width,height,id){
 	}
 
 	this.resize = function(x,y){
-		this.width +=x;
-		this.height +=y;
-
+		this.width =x;
+		this.height =y;
 		var tabletmp = this.createElement("table",this.id);
 		var tr;
 		var td;
@@ -691,4 +742,11 @@ function createTableau(width,height,id){
 			this.parent=null;
 		}
 	}
+}
+
+function findArray(array,value){
+	for(var i = 0; i<array.length ; i++){
+		if(array[i]==value) return 1;
+	}
+	return -1;
 }

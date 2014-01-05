@@ -21,7 +21,8 @@
 	</html:body>
 	
 	<footer>
-
+		<html:input type="button" name="afficher" value="afficher" onclick="afficher()"/>
+		<html:input type="button" name="Create" value="create" onclick="create()"/>
 	</footer>
 	
 </window>
